@@ -1,0 +1,104 @@
+class Solution:
+    def sortArray(self, nums):
+        def merge_sort(arr):
+            if len(arr) <= 1:
+                return arr
+
+            mid = len(arr) // 2
+            left = merge_sort(arr[:mid])
+            right = merge_sort(arr[mid:])
+
+            return merge(left, right)
+
+        def merge(left, right):
+            result = []
+            i = j = 0
+
+            while i < len(left) and j < len(right):
+                if left[i] < right[j]:
+                    result.append(left[i])
+                    i += 1
+                else:
+                    result.append(right[j])
+                    j += 1
+
+            result.extend(left[i:])
+            result.extend(right[j:])
+            return result
+
+        return merge_sort(nums)
+from collections import Counter
+
+class Solution:
+    def topKFrequent(self, nums, k):
+        count = Counter(nums)
+        return [item for item, freq in count.most_common(k)]
+import heapq
+
+class MedianFinder:
+
+    def __init__(self):
+        self.small = []
+        self.large = []
+
+    def addNum(self, num):
+        heapq.heappush(self.small, -num)
+
+        if self.small and self.large and (-self.small[0] > self.large[0]):
+            heapq.heappush(self.large, -heapq.heappop(self.small))
+
+        if len(self.small) > len(self.large) + 1:
+            heapq.heappush(self.large, -heapq.heappop(self.small))
+
+        if len(self.large) > len(self.small):
+            heapq.heappush(self.small, -heapq.heappop(self.large))
+
+    def findMedian(self):
+        if len(self.small) > len(self.large):
+            return -self.small[0]
+        return (-self.small[0] + self.large[0]) / 2.0
+from collections import defaultdict
+
+class Solution:
+    def canFinish(self, numCourses, prerequisites):
+        graph = defaultdict(list)
+
+        for a, b in prerequisites:
+            graph[a].append(b)
+
+        visit = set()
+
+        def dfs(course):
+            if course in visit:
+                return False
+            if graph[course] == []:
+                return True
+
+            visit.add(course)
+
+            for pre in graph[course]:
+                if not dfs(pre):
+                    return False
+
+            visit.remove(course)
+            graph[course] = []
+            return True
+
+        for c in range(numCourses):
+            if not dfs(c):
+                return False
+
+        return True
+class Solution:
+    def merge(self, intervals):
+        intervals.sort(key=lambda x: x[0])
+
+        merged = []
+
+        for interval in intervals:
+            if not merged or merged[-1][1] < interval[0]:
+                merged.append(interval)
+            else:
+                merged[-1][1] = max(merged[-1][1], interval[1])
+
+        return merged
