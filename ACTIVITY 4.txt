@@ -1,0 +1,121 @@
+#include <stdio.h>
+
+int climbStairs(int n) {
+    if (n <= 2) return n;
+
+    int a = 1, b = 2, c;
+    for (int i = 3; i <= n; i++) {
+        c = a + b;
+        a = b;
+        b = c;
+    }
+    return b;
+}
+
+int main() {
+    int n = 5;
+    printf("%d", climbStairs(n));
+    return 0;
+}
+#include <stdio.h>
+
+int rob(int nums[], int n) {
+    if (n == 0) return 0;
+    if (n == 1) return nums[0];
+
+    int prev1 = 0, prev2 = 0, temp;
+
+    for (int i = 0; i < n; i++) {
+        temp = prev1;
+        prev1 = (prev2 + nums[i] > prev1) ? prev2 + nums[i] : prev1;
+        prev2 = temp;
+    }
+    return prev1;
+}
+
+int main() {
+    int nums[] = {2,7,9,3,1};
+    int n = 5;
+    printf("%d", rob(nums, n));
+    return 0;
+}
+#include <stdio.h>
+#include <limits.h>
+
+int coinChange(int coins[], int n, int amount) {
+    int dp[amount + 1];
+
+    for (int i = 0; i <= amount; i++)
+        dp[i] = amount + 1;
+
+    dp[0] = 0;
+
+    for (int i = 1; i <= amount; i++) {
+        for (int j = 0; j < n; j++) {
+            if (coins[j] <= i) {
+                int sub = dp[i - coins[j]];
+                if (sub != amount + 1 && sub + 1 < dp[i]) {
+                    dp[i] = sub + 1;
+                }
+            }
+        }
+    }
+
+    return dp[amount] > amount ? -1 : dp[amount];
+}
+
+int main() {
+    int coins[] = {1,2,5};
+    int n = 3;
+    int amount = 11;
+    printf("%d", coinChange(coins, n, amount));
+    return 0;
+}
+#include <stdio.h>
+#include <string.h>
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int lcs(char *text1, char *text2) {
+    int m = strlen(text1);
+    int n = strlen(text2);
+
+    int dp[m+1][n+1];
+
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            if (i == 0 || j == 0)
+                dp[i][j] = 0;
+            else if (text1[i-1] == text2[j-1])
+                dp[i][j] = dp[i-1][j-1] + 1;
+            else
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+    return dp[m][n];
+}
+
+int main() {
+    char t1[] = "abcde";
+    char t2[] = "ace";
+    printf("%d", lcs(t1, t2));
+    return 0;
+}
+#include <stdio.h>
+
+int hammingWeight(unsigned int n) {
+    int count = 0;
+    while (n) {
+        n = n & (n - 1);
+        count++;
+    }
+    return count;
+}
+
+int main() {
+    unsigned int n = 11;
+    printf("%d", hammingWeight(n));
+    return 0;
+}
